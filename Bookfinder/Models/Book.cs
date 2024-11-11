@@ -19,6 +19,6 @@ namespace Bookfinder.Models
 
         public bool IsFavorited { get; set; } // Adicionando a propriedade favoritado
 
-
+      
     }
 }

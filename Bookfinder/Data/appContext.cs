@@ -15,6 +15,7 @@ namespace Bookfinder.Data
 
         public DbSet<FavoriteBook> FavoriteBooks { get; set; }
 
+        public DbSet<Review> Reviews { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

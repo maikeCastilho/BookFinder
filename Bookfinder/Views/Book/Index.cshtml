@@ -9,10 +9,11 @@
 
     @if (ViewBag.Message != null)
     {
-        <div class="alert alert-success" role="alert">
+        <div class= "@ViewBag.Style" role="alert">
             @ViewBag.Message
         </div>
     }
+    
 
     <div class="row">
         @foreach (var book in Model)

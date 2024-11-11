@@ -16,6 +16,10 @@
                         <h5 class="card-title">@favorite.Title</h5>
                         <p class="card-text">Autor: @favorite.Author</p>
                         <a href="https://openlibrary.org@favorite.BookKey" class="btn btn-primary">Ver Detalhes</a>
+                        <form method="post" asp-action="DeleteFavorite" asp-route-bookKey="@favorite.BookKey">
+                            <button type="submit" class="btn btn-danger mt-2">Remover dos Favoritos</button>
+                        </form>
+                        <a asp-action="AddReview" asp-route-favoriteBookId="@favorite.Id" class="btn btn-secondary mt-2">Adicionar Resenha</a>
                     </div>
                 </div>
             </div>

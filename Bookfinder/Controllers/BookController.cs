@@ -73,10 +73,12 @@ namespace Bookfinder.Controllers
                 await _context.SaveChangesAsync();
 
                 ViewBag.Message = "Livro favoritado com sucesso!";
+                ViewBag.Style = "alert alert-success";
             }
             else
             {
                 ViewBag.Message = "Este livro já está na sua lista de favoritos.";
+                ViewBag.Style = "alert alert-danger";
             }
 
             // Obtém a lista de livros da API para mostrar novamente na view
@@ -94,5 +96,60 @@ namespace Bookfinder.Controllers
         }
 
 
+        public async Task<IActionResult> DeleteFavorite(string bookKey)
+        {
+            if (string.IsNullOrEmpty(bookKey))
+            {
+                return BadRequest(); // Trata caso de chave vazia
+            }
+
+            // Procura o livro favorito na tabela
+            var favoriteBook = await _context.FavoriteBooks
+                .SingleOrDefaultAsync(f => f.BookKey == bookKey);
+
+            if (favoriteBook != null)
+            {
+                _context.FavoriteBooks.Remove(favoriteBook);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Livro removido dos favoritos com sucesso!";
+            }
+            else
+            {
+                TempData["Message"] = "Livro não encontrado nos favoritos.";
+            }
+
+            // Redireciona de volta para a lista de livros favoritos
+            return RedirectToAction("FavoriteBooks");
+        }
+
+        // GET: Formulário para adicionar resenha
+        public IActionResult AddReview(int favoriteBookId)
+        {
+            ViewBag.FavoriteBookId = favoriteBookId;
+
+            // Carrega as resenhas associadas ao livro favorito
+            var reviews = _context.Reviews
+                .Where(r => r.FavoriteBookId == favoriteBookId) // Filtra resenhas pelo ID do livro favorito
+                .ToList();
+
+            ViewBag.Reviews = reviews; // Passa as resenhas para a view
+            return View();
+        }
+
+        // POST: Processar adição de resenha
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddReview(Review review)
+        {
+            
+                _context.Reviews.Add(review);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = "Resenha adicionada com sucesso!";
+                return RedirectToAction("FavoriteBooks"); // Redireciona para a lista de livros favoritos
+            
+        }
     }
+
+
 }
+

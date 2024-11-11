@@ -40,6 +40,7 @@ namespace SeuProjeto.Services
 
         public async Task<Book> GetBookDetailsAsync(string bookKey)
         {
+
             // Montando a URL para obter detalhes do livro
             var url = $"https://openlibrary.org{bookKey}.json"; // Formato da URL para obter os detalhes do livro
 
@@ -52,9 +53,10 @@ namespace SeuProjeto.Services
                 Title = result.title,
                 Author = result.authors[0].name != null && result.authors.Count > 0 ? result.authors[0].name : "Autor desconhecido", // Verifica se existe um autor
                 Key = result.key,
-                Cover =  $"https://covers.openlibrary.org/b/id/{result.cover_id}-L.jpg" // Modifica para pegar a URL da imagem
+                Cover = $"https://covers.openlibrary.org/b/id/{result.covers[0]}-L.jpg" // Modifica para pegar a URL da imagem
 
             };
+
 
             return book;
         }

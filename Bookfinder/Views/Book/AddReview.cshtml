@@ -1,0 +1,32 @@
+﻿@model Bookfinder.Models.Review
+
+@{
+    ViewData["Title"] = "Adicionar Resenha";
+}
+
+<h1>Adicionar Resenha</h1>
+
+<form asp-action="AddReview" method="post">
+    <input type="hidden" asp-for="FavoriteBookId" value="@ViewBag.FavoriteBookId" />
+    <div class="form-group">
+        <label for="Content">Conteúdo da Resenha</label>
+        <textarea asp-for="Content" class="form-control" rows="5" required></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Adicionar Resenha</button>
+</form>
+
+<h3>Resenhas já adicionadas:</h3>
+<div class="row">
+    @foreach (var review in ViewBag.Reviews)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">@review.Content</p>
+                    <p class="card-text"><small class="text-muted">Resenha ID: @review.Id</small></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
