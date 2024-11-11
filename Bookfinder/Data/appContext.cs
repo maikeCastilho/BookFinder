@@ -13,15 +13,28 @@ namespace Bookfinder.Data
         // DbSet para Users
         public DbSet<User> Users { get; set; }
 
-        public DbSet<FavoriteBook> FavoriteBooks { get; set; }
-
-        public DbSet<Review> Reviews { get; set; } 
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            // Configuração do relacionamento de muitos para muitos entre User e Book
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Books)
+                .WithMany(b => b.Users);
 
-         
+            // Configuração do relacionamento de um para muitos entre Book e Review
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Book)
+                .WithMany(b => b.Reviews)
+                .HasForeignKey(r => r.BookId); // Chave estrangeira no Review
+
+            // Configuração do relacionamento de um para muitos entre User e Review
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId); // Chave estrangeira no Review
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

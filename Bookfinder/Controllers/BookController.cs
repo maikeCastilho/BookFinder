@@ -13,14 +13,12 @@ namespace Bookfinder.Controllers
         private readonly MyContext _context;
         private readonly OpenLibraryService _service;
 
-
         public BookController(MyContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _service = new OpenLibraryService();
         }
 
-      
         public async Task<IActionResult> Index()
         {
             var books = await _service.GetBooksAsync();
@@ -41,8 +39,6 @@ namespace Bookfinder.Controllers
             return View(book);
         }
 
-
-
         public async Task<IActionResult> Favorite(string bookKey)
         {
             if (string.IsNullOrEmpty(bookKey))
@@ -50,26 +46,27 @@ namespace Bookfinder.Controllers
                 return BadRequest(); // Trata caso de chave vazia
             }
 
-            // Verifica se o livro já está na tabela FavoriteBooks
-            var existingFavorite = await _context.FavoriteBooks
-                .SingleOrDefaultAsync(f => f.BookKey == bookKey);
+            // Verifica se o livro já existe no banco de dados
+            var existingBook = await _context.Books
+                .SingleOrDefaultAsync(b => b.Key == bookKey);
 
-            if (existingFavorite == null)
+            if (existingBook == null)
             {
-                // Se o livro não existe como favorito, pegue seus detalhes
+                // Se o livro não existir, pegue seus detalhes da API
                 var bookDetails = await _service.GetBookDetailsAsync(bookKey);
 
-                // Crie um novo favorito com os detalhes do livro
-                var favoriteBook = new FavoriteBook
+                // Crie um novo livro com os detalhes
+                var book = new Book
                 {
-                    BookKey = bookKey,
-                    UserId = 1, // Defina este ID corretamente se houver controle de usuários
+                    Key = bookKey,
                     Title = bookDetails.Title,
                     Author = bookDetails.Author,
-                    Cover = bookDetails.Cover
+                    Cover = bookDetails.Cover,
+                    IsFavorited = true // Define que o livro está favoritado
                 };
 
-                _context.FavoriteBooks.Add(favoriteBook);
+                // Adiciona o livro ao contexto
+                _context.Books.Add(book);
                 await _context.SaveChangesAsync();
 
                 ViewBag.Message = "Livro favoritado com sucesso!";
@@ -86,15 +83,15 @@ namespace Bookfinder.Controllers
             return View("Index", books);
         }
 
-
         public async Task<IActionResult> FavoriteBooks()
         {
-            var favoriteBooks = await _context.FavoriteBooks
-                .ToListAsync(); // Adicione Include se precisar de detalhes do livro
+            // Obtém todos os livros que estão no banco de dados
+            var favoriteBooks = await _context.Books
+                .Where(b => b.IsFavorited) // Filtra livros favoritados
+                .ToListAsync();
 
             return View(favoriteBooks); // Retorna a view com a lista de livros favoritos
         }
-
 
         public async Task<IActionResult> DeleteFavorite(string bookKey)
         {
@@ -103,13 +100,14 @@ namespace Bookfinder.Controllers
                 return BadRequest(); // Trata caso de chave vazia
             }
 
-            // Procura o livro favorito na tabela
-            var favoriteBook = await _context.FavoriteBooks
-                .SingleOrDefaultAsync(f => f.BookKey == bookKey);
+            // Procura o livro na tabela
+            var book = await _context.Books
+                .SingleOrDefaultAsync(b => b.Key == bookKey);
 
-            if (favoriteBook != null)
+            if (book != null)
             {
-                _context.FavoriteBooks.Remove(favoriteBook);
+                // Remove o livro do contexto
+                _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
                 TempData["Message"] = "Livro removido dos favoritos com sucesso!";
             }
@@ -123,13 +121,13 @@ namespace Bookfinder.Controllers
         }
 
         // GET: Formulário para adicionar resenha
-        public IActionResult AddReview(int favoriteBookId)
+        public IActionResult AddReview(int bookId)
         {
-            ViewBag.FavoriteBookId = favoriteBookId;
+            ViewBag.BookId = bookId;
 
-            // Carrega as resenhas associadas ao livro favorito
+            // Carrega as resenhas associadas ao livro
             var reviews = _context.Reviews
-                .Where(r => r.FavoriteBookId == favoriteBookId) // Filtra resenhas pelo ID do livro favorito
+                .Where(r => r.BookId == bookId) // Filtra resenhas pelo ID do livro
                 .ToList();
 
             ViewBag.Reviews = reviews; // Passa as resenhas para a view
@@ -144,10 +142,9 @@ namespace Bookfinder.Controllers
             review.CreatedAt = DateTime.Now;
 
             _context.Reviews.Add(review);
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Resenha adicionada com sucesso!";
-                return RedirectToAction("FavoriteBooks"); // Redireciona para a lista de livros favoritos
-            
+            await _context.SaveChangesAsync();
+            TempData["Message"] = "Resenha adicionada com sucesso!";
+            return RedirectToAction("FavoriteBooks"); // Redireciona para a lista de livros favoritos
         }
     }
 

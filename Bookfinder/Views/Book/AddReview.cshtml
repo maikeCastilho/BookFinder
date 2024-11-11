@@ -7,7 +7,7 @@
 <h1>Adicionar Resenha</h1>
 
 <form asp-action="AddReview" method="post">
-    <input type="hidden" asp-for="FavoriteBookId" value="@ViewBag.FavoriteBookId" />
+    <input type="hidden" asp-for="BookId" value="@ViewBag.BookId" />
     <div class="form-group">
         <label for="Content">Conteúdo da Resenha</label>
         <textarea asp-for="Content" class="form-control" rows="5" required></textarea>

@@ -10,7 +10,9 @@ namespace Bookfinder.Models
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public ICollection<Book> Books { get; set; } = new List<Book>();
+        // Nova coleção para relacionamento n:n com Book
+        public virtual ICollection<Book> Books { get; set; } = new List<Book>();
+
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>(); // Adiciona a coleção de Reviews
     }
 }
