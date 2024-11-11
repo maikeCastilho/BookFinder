@@ -126,23 +126,35 @@ namespace Bookfinder.Controllers
             ViewBag.BookId = bookId;
 
             // Carrega as resenhas associadas ao livro
-            var reviews = _context.Reviews
+            ViewBag.Reviews = _context.Reviews
                 .Where(r => r.BookId == bookId) // Filtra resenhas pelo ID do livro
                 .ToList();
 
-            ViewBag.Reviews = reviews; // Passa as resenhas para a view
             return View();
         }
 
-        // POST: Processar adição de resenha
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(Review review)
         {
-            review.CreatedAt = DateTime.Now;
+            Console.WriteLine($"BookId recebido: {review.BookId}"); // Verifica qual BookId está sendo recebido
 
+            // Verifica se o livro existe
+            var bookExists = await _context.Books.AnyAsync(b => b.Id == review.BookId);
+            if (!bookExists)
+            {
+                ModelState.AddModelError("", "O livro associado à resenha não existe.");
+                ViewBag.BookId = review.BookId; // Retorna o BookId para a view
+                ViewBag.Reviews = await _context.Reviews
+                    .Where(r => r.BookId == review.BookId)
+                    .ToListAsync();
+                return View(review); // Retorna a view com erro
+            }
+
+            review.CreatedAt = DateTime.Now; // Define a data de criação
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
+
             TempData["Message"] = "Resenha adicionada com sucesso!";
             return RedirectToAction("FavoriteBooks"); // Redireciona para a lista de livros favoritos
         }
