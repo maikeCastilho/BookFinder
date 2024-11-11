@@ -20,12 +20,14 @@
                         <h5 class="mb-1 text-primary">@favorite.Title</h5>
                         <p class="mb-1">Autor: @favorite.Author</p>
                         <div class="d-flex justify-content-between">
-                            <a href="https://openlibrary.org/works/@favorite.BookKey" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                            @Html.Partial("_DetailButton", $"https://openlibrary.org/{favorite.BookKey}")
+
                             <form method="post" asp-action="DeleteFavorite" asp-route-bookKey="@favorite.BookKey" class="d-inline">
-                                <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                                @Html.Partial("_DeleteButton", favorite.BookKey)
                             </form>
                         </div>
-                        <a asp-action="AddReview" asp-route-favoriteBookId="@favorite.Id" class="btn btn-secondary btn-sm mt-2">Adicionar Resenha</a>
+                            @Html.Partial("_AddReviewButton", favorite.Id)
+                      
                     </div>
                 </div>
             </li>

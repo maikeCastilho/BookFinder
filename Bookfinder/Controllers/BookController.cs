@@ -141,8 +141,9 @@ namespace Bookfinder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(Review review)
         {
-            
-                _context.Reviews.Add(review);
+            review.CreatedAt = DateTime.Now;
+
+            _context.Reviews.Add(review);
                 await _context.SaveChangesAsync();
                 TempData["Message"] = "Resenha adicionada com sucesso!";
                 return RedirectToAction("FavoriteBooks"); // Redireciona para a lista de livros favoritos

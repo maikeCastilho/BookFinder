@@ -26,9 +26,8 @@
                         <p class="card-text">Autor: @book.Author</p>
 
                         <div class="d-flex justify-content-between">
-                            <a href="https://openlibrary.org/@book.Key" class="btn btn-secondary me-2">
-                                <i class="fas fa-info-circle"></i> Detalhes
-                            </a>
+                            @Html.Partial("_DetailButton", $"https://openlibrary.org/{book.Key}")
+
                             <form method="post" asp-action="Favorite" style="display: inline;">
                                 <input type="hidden" name="bookKey" value="@book.Key" />
                                 <button type="submit" class="btn btn-primary">

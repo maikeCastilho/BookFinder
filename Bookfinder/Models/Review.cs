@@ -11,5 +11,7 @@ namespace Bookfinder.Models
 
         public int FavoriteBookId { get; set; } // ID do livro favorito associado
         public virtual FavoriteBook FavoriteBook { get; set; } // Relacionamento com FavoriteBook
+
+        public DateTime CreatedAt { get; set; } // Data e hora de criação
     }
 }

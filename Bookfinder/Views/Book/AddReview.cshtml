@@ -13,7 +13,7 @@
         <textarea asp-for="Content" class="form-control" rows="5" required></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Adicionar Resenha</button>
+    <button type="submit" class="btn btn-success">Adicionar Resenha</button>
 </form>
 
 <h3>Resenhas já adicionadas:</h3>
@@ -23,8 +23,17 @@
         <div class="col-md-4">
             <div class="card mb-3">
                 <div class="card-body">
-                    <p class="card-text">@review.Content</p>
-                    <p class="card-text"><small class="text-muted">Resenha ID: @review.Id</small></p>
+                    <!-- Conteúdo principal da resenha com destaque -->
+                    <p class="card-text" style="font-size: 1.1em; font-weight: 500;">@review.Content</p>
+
+                    <!-- Linha divisória para separar o conteúdo principal das informações secundárias -->
+                    <hr class="my-2">
+
+                    <!-- Informações secundárias (ID da resenha e data) alinhadas horizontalmente e com estilo discreto -->
+                    <div class="d-flex justify-content-between text-muted" style="font-size: 0.85em;">
+                        <p class="mb-0">Resenha ID: @review.Id</p>
+                        <p class="mb-0">Criada em: @review.CreatedAt</p>
+                    </div>
                 </div>
             </div>
         </div>
