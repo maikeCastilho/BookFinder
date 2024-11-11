@@ -24,7 +24,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@book.Title</h5>
                         <p class="card-text">Autor: @book.Author</p>
-                        <a href="https://openlibrary.org@book.Key" class="btn btn-primary">Ver Detalhes</a>
+                        <a href="https://openlibrary.org/works/@book.Key" class="btn btn-primary">Ver Detalhes</a>
                         <form method="post" asp-action="Favorite">
                             <input type="hidden" name="bookKey" value="@book.Key" />
                             <button type="submit" class="btn btn-secondary">Favoritar</button>
