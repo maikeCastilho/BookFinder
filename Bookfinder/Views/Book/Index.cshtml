@@ -1,53 +1,36 @@
 ﻿@model IEnumerable<Bookfinder.Models.Book>
 
 @{
-	ViewData["Title"] = "Books";
+    ViewData["Title"] = "Books";
 }
 
-<div class="row">
-    <h2>Meus Livros <a class="btn btn-success" type="button" asp-action="Create">+</a></h2>
-      
-<div/>
+<div class="container">
+    <h1>Biblioteca</h1>
 
-    <div class="container">
-        <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3">
-            @foreach (var item in Model)
-            {
-                <div class="col">
-                    <div class="p-3">
-                        <div class="card mb-3" style="width: 20rem; height: 300px">
-                            <div class="card-body">
-                                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">
-                                    @Html.DisplayFor(modelItem => item.Author) | @Html.DisplayFor(modelItem => item.Category)
-                                </h6>
-                                <p class="card-text">Lido por: @Html.DisplayFor(modelItem => item.User.Name)</p>
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.Message
+        </div>
+    }
 
-                                <div style="min-height: 120px">
-                                    <p class="card-text">Comentário: @Html.DisplayFor(modelItem => item.Comment)</p>
-                                </div>
-
-                                <div class="card-body align-items-end">
-
-                                    <a href="@Url.Action("Details", new {id = item.Id})" class="btn btn-primary" style="font-size: 15px">
-                                        <i class="fa-solid fas fa-search"></i> Detalhes
-                                    </a>
-
-                                    <a href="@Url.Action("Edit", new {id = item.Id})" class="btn btn-secondary" style="font-size: 15px">
-                                        <i class="fa-solid fa fa-pencil"></i>
-                                    </a>
-
-                                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger" style="font-size: 15px">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
-
-                                </div>
-                            </div>
-                        </div>
+    <div class="row">
+        @foreach (var book in Model)
+        {
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <img src="@book.Cover" class="card-img-top" alt="@book.Title" style="width: 100%; height: 300px; object-fit: fill;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text">Autor: @book.Author</p>
+                        <a href="https://openlibrary.org@book.Key" class="btn btn-primary">Ver Detalhes</a>
+                        <form method="post" asp-action="Favorite">
+                            <input type="hidden" name="bookKey" value="@book.Key" />
+                            <button type="submit" class="btn btn-secondary">Favoritar</button>
+                        </form>
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
-    </div>
-
+</div>

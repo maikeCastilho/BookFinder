@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Z1GuZ/ZmmZklJw/wuVBL+cPOtXVCa9FfvtcURieCfiFlr9DpGADx3A7s4wdgYSgv+igKu/QFObQ+1nlXWYlK4Q==",
+  "dgSpecHash": "puWc+RxYj6SbS4iLAGHxxPQwFr4m8x68zVNffls/698Z8lx4Xi1EqqT1NqXsbWkUqiGuHdI9cL6mn4HODobxrg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Allcateia - Maike\\Source\\Repos\\BookFinder\\Bookfinder\\Bookfinder.csproj",
+  "projectFilePath": "C:\\DevelopmentHub\\Labs\\UniFoa\\BookFinder\\Bookfinder\\Bookfinder.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
@@ -47,6 +47,7 @@
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.19.6\\microsoft.visualstudio.azure.containers.tools.targets.1.19.6.nupkg.sha512",
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
     "C:\\Users\\Allcateia - Maike\\.nuget\\packages\\system.composition\\6.0.0\\system.composition.6.0.0.nupkg.sha512",

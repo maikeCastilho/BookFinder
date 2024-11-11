@@ -13,16 +13,14 @@ namespace Bookfinder.Data
         // DbSet para Users
         public DbSet<User> Users { get; set; }
 
+        public DbSet<FavoriteBook> FavoriteBooks { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configurar a relação 1:N entre User e Book
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Books)
-                .WithOne(b => b.User)
-                .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Adiciona comportamento de deleção em cascata
+         
         }
     }
 }

@@ -71,22 +71,7 @@ namespace Bookfinder.Controllers
         }
 
 
-            public async Task<IActionResult> Details(int? Id)
-            {
-                int totalBooks = await _context.Books.CountAsync(b => b.UserId == Id);
-                int readedBooks = await _context.Books.CountAsync(b => b.UserId == Id && b.IsReaded);
-                double progress = totalBooks > 0 ? ((double)readedBooks / totalBooks) * 100 : 0;
-                string formatedProgress = progress.ToString("F0");
-
-                var Dashboard = new Dashboard
-                {
-                    TotalBooks = totalBooks,
-                    TotReadedBooks = readedBooks,
-                    Progress = formatedProgress
-                };
-
-                return View(Dashboard);
-            }
+            
 
             public async Task<IActionResult> Edit(int? id)
             {

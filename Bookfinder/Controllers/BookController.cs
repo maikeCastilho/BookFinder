@@ -3,6 +3,7 @@ using Bookfinder.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SeuProjeto.Services;
 
 
 namespace Bookfinder.Controllers
@@ -10,131 +11,88 @@ namespace Bookfinder.Controllers
     public class BookController : Controller
     {
         private readonly MyContext _context;
+        private readonly OpenLibraryService _service;
+
 
         public BookController(MyContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _service = new OpenLibraryService();
         }
 
-        public IActionResult Create()
-        {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name");
-            return View();
-        }
-
-
+      
         public async Task<IActionResult> Index()
         {
-            var books = await _context.Books
-                .Include(b => b.User)
-                .OrderBy(i => i.Title)
-                .ToListAsync();
+            var books = await _service.GetBooksAsync();
             return View(books);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Author,Category,Comment,Rating,IsReaded,UserId")] Book book)
+        public async Task<IActionResult> Details(long? id)
         {
-            ModelState.Remove("User"); // Remove a validação para o campo de navegação 'User'
-
-            foreach (var state in ModelState)
+            if (id == null)
             {
-                Console.WriteLine($"Key: {state.Key}, Errors: {string.Join(", ", state.Value.Errors.Select(e => e.ErrorMessage))}");
+                return NotFound();
             }
-            if (ModelState.IsValid)
+            var book = await _context.Books.SingleOrDefaultAsync(i => i.Id == id);
+            if (book == null)
             {
-                _context.Add(book);
+                return NotFound();
+            }
+            return View(book);
+        }
+
+
+
+        public async Task<IActionResult> Favorite(string bookKey)
+        {
+            if (string.IsNullOrEmpty(bookKey))
+            {
+                return BadRequest(); // Trata caso de chave vazia
+            }
+
+            // Verifica se o livro já está na tabela FavoriteBooks
+            var existingFavorite = await _context.FavoriteBooks
+                .SingleOrDefaultAsync(f => f.BookKey == bookKey);
+
+            if (existingFavorite == null)
+            {
+                // Se o livro não existe como favorito, pegue seus detalhes
+                var bookDetails = await _service.GetBookDetailsAsync(bookKey);
+
+                // Crie um novo favorito com os detalhes do livro
+                var favoriteBook = new FavoriteBook
+                {
+                    BookKey = bookKey,
+                    UserId = 1, // Defina este ID corretamente se houver controle de usuários
+                    Title = bookDetails.Title,
+                    Author = bookDetails.Author,
+                    Cover = bookDetails.Cover
+                };
+
+                _context.FavoriteBooks.Add(favoriteBook);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+
+                ViewBag.Message = "Livro favoritado com sucesso!";
+            }
+            else
+            {
+                ViewBag.Message = "Este livro já está na sua lista de favoritos.";
             }
 
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name", book.UserId);
-            return View(book);
+            // Obtém a lista de livros da API para mostrar novamente na view
+            var books = await _service.GetBooksAsync();
+            return View("Index", books);
         }
-         
-    public async Task<IActionResult> Details(long? id)
+
+
+        public async Task<IActionResult> FavoriteBooks()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var book = await _context.Books.SingleOrDefaultAsync(i => i.Id == id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-            return View(book);
+            var favoriteBooks = await _context.FavoriteBooks
+                .ToListAsync(); // Adicione Include se precisar de detalhes do livro
+
+            return View(favoriteBooks); // Retorna a view com a lista de livros favoritos
         }
 
 
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var book = await _context.Books.SingleOrDefaultAsync(i => i.Id == id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-            return View(book);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(long? id)
-        {
-            var book = await _context.Books.SingleOrDefaultAsync(i => i.Id == id);
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index");
-        }
-
-
-        public async Task<IActionResult> Edit(int? Id)
-        {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name");
-            if (Id == null)
-            {
-                return NotFound();
-            }
-            var book = await _context.Books.SingleOrDefaultAsync(i => i.Id == Id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-            return View(book);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? Id, [Bind("Id, Title,Author,Category,Comment,Rating,IsReaded,UserId")] Book book)
-        {
-            ModelState.Remove("User");
-
-            if (Id != book.Id)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
-                try{
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {    
-                   throw;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(book);
-        }
     }
 }

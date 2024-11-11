@@ -8,33 +8,17 @@ namespace Bookfinder.Models
     {
         [Key]
         public int Id { get; set; }
-
-        [Required]
-        [MaxLength(30)]
+   
         public String Title { get; set; }
 
-        [Required]
-        [MaxLength(30)]
         public String Author { get; set; }
 
-        [Required]
-        [MaxLength(20)]
-        public String Category { get; set; }
+        public string Key { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public String Comment { get; set; }
+        public string? Cover { get ; set; }
 
-        [Required]
-        public int Rating { get; set; }
+        public bool IsFavorited { get; set; } // Adicionando a propriedade favoritado
 
-        [Required]
-        public bool IsReaded {  get; set; }
 
-        [Required]
-        public int UserId { get; set; }
-
-        [ForeignKey("UserId")]
-        public User User { get; set; }
     }
 }

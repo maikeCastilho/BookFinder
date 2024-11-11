@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Bookfinder.Models.FavoriteBook>
+
+@{
+    ViewData["Title"] = "Livros Favoritados";
+}
+
+<div class="container">
+    <h1>Livros Favoritados</h1>
+    <div class="row">
+        @foreach (var favorite in Model)
+        {
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <img src="@favorite.Cover" class="card-img-top" alt="@favorite.Title" style="width: 100%; height: 300px; object-fit: fill;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@favorite.Title</h5>
+                        <p class="card-text">Autor: @favorite.Author</p>
+                        <a href="https://openlibrary.org@favorite.BookKey" class="btn btn-primary">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
