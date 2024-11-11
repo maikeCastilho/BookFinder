@@ -4,25 +4,31 @@
     ViewData["Title"] = "Livros Favoritados";
 }
 
-<div class="container">
-    <h1>Livros Favoritados</h1>
-    <div class="row">
+<div class="container mt-4">
+    <h1 class="text-center">Livros Favoritados</h1>
+    <p class="text-center text-muted">Veja sua coleção de livros favoritos!</p>
+
+    <ul class="list-group">
         @foreach (var favorite in Model)
         {
-            <div class="col-md-3">
-                <div class="card mb-3">
-                    <img src="@favorite.Cover" class="card-img-top" alt="@favorite.Title" style="width: 100%; height: 300px; object-fit: fill;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@favorite.Title</h5>
-                        <p class="card-text">Autor: @favorite.Author</p>
-                        <a href="https://openlibrary.org/works/@favorite.BookKey" class="btn btn-primary">Ver Detalhes</a>
-                        <form method="post" asp-action="DeleteFavorite" asp-route-bookKey="@favorite.BookKey">
-                            <button type="submit" class="btn btn-danger mt-2">Remover dos Favoritos</button>
-                        </form>
-                        <a asp-action="AddReview" asp-route-favoriteBookId="@favorite.Id" class="btn btn-secondary mt-2">Adicionar Resenha</a>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="@favorite.Cover" alt="@favorite.Title" class="img-fluid" style="height: 150px; object-fit: cover;" />
+                    </div>
+                    <div class="col-md-10">
+                        <h5 class="mb-1 text-primary">@favorite.Title</h5>
+                        <p class="mb-1">Autor: @favorite.Author</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="https://openlibrary.org/works/@favorite.BookKey" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                            <form method="post" asp-action="DeleteFavorite" asp-route-bookKey="@favorite.BookKey" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                            </form>
+                        </div>
+                        <a asp-action="AddReview" asp-route-favoriteBookId="@favorite.Id" class="btn btn-secondary btn-sm mt-2">Adicionar Resenha</a>
                     </div>
                 </div>
-            </div>
+            </li>
         }
-    </div>
+    </ul>
 </div>

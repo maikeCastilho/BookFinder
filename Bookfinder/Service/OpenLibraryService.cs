@@ -18,7 +18,7 @@ namespace SeuProjeto.Services
         public async Task<List<Book>> GetBooksAsync()
         {
             // URL da API
-            var url = "https://openlibrary.org/subjects/love.json?limit=10";
+            var url = "https://openlibrary.org/subjects/love.json?limit=15";
             var response = await _httpClient.GetStringAsync(url);
             dynamic result = JsonConvert.DeserializeObject(response);
 
