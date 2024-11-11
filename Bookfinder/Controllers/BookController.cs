@@ -124,11 +124,7 @@ namespace Bookfinder.Controllers
         public IActionResult AddReview(int bookId)
         {
             ViewBag.BookId = bookId;
-
-            // Carrega as resenhas associadas ao livro
-            ViewBag.Reviews = _context.Reviews
-                .Where(r => r.BookId == bookId) // Filtra resenhas pelo ID do livro
-                .ToList();
+            ViewBag.BookTitle = _context.Books.FirstOrDefault(b => b.Id == bookId)?.Title;
 
             return View();
         }
@@ -137,26 +133,24 @@ namespace Bookfinder.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(Review review)
         {
-            Console.WriteLine($"BookId recebido: {review.BookId}"); // Verifica qual BookId está sendo recebido
-
-            // Verifica se o livro existe
-            var bookExists = await _context.Books.AnyAsync(b => b.Id == review.BookId);
-            if (!bookExists)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", "O livro associado à resenha não existe.");
-                ViewBag.BookId = review.BookId; // Retorna o BookId para a view
-                ViewBag.Reviews = await _context.Reviews
-                    .Where(r => r.BookId == review.BookId)
-                    .ToListAsync();
-                return View(review); // Retorna a view com erro
+                var bookExists = await _context.Books.AnyAsync(b => b.Id == review.BookId);
+                if (!bookExists)
+                {
+                    ModelState.AddModelError("", "O livro associado à resenha não existe.");
+                    return View(review); // Retorna à view se o livro não existir
+                }
+
+                review.CreatedAt = DateTime.Now; // Data e hora da criação
+                _context.Reviews.Add(review);
+                await _context.SaveChangesAsync();
+
+                TempData["Message"] = "Resenha adicionada com sucesso!";
+                return RedirectToAction("FavoriteBooks"); // Redireciona após adicionar
             }
 
-            review.CreatedAt = DateTime.Now; // Define a data de criação
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = "Resenha adicionada com sucesso!";
-            return RedirectToAction("FavoriteBooks"); // Redireciona para a lista de livros favoritos
+            return View(review); // Retorna à view em caso de erro no modelo
         }
     }
 
