@@ -31,7 +31,7 @@ namespace Bookfinder.Service
                     Title = item.title,
                     Author = item.authors[0].name,
                     Key = item.key,
-                    Cover = item.cover_id == null ? null : $"https://covers.openlibrary.org/b/id/{item.cover_id}-L.jpg" // Modifica para pegar a URL da imagem
+                    Cover = item.cover_id == null ? null : $"https://covers.openlibrary.org/b/id/{item.cover_id}-L.jpg"
         });
             }
 
@@ -40,14 +40,11 @@ namespace Bookfinder.Service
 
         public async Task<Book> GetBookDetailsAsync(string bookKey)
         {
-
-           
             var url = $"https://openlibrary.org{bookKey}.json";
 
             var response = await _httpClient.GetStringAsync(url);
             dynamic result = JsonConvert.DeserializeObject(response);
 
-            
             var book = new Book
             {
                 Title = result.title,
@@ -56,7 +53,6 @@ namespace Bookfinder.Service
                 Cover = $"https://covers.openlibrary.org/b/id/{result.covers[0]}-L.jpg" 
 
             };
-
 
             return book;
         }

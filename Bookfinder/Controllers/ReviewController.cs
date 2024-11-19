@@ -39,7 +39,6 @@ namespace Bookfinder.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(int bookId, string content)
         {
-            Console.WriteLine($"Teste: {bookId}");
             if (string.IsNullOrEmpty(content))
             {
                 ModelState.AddModelError("", "O conteúdo da resenha não pode ser vazio.");
